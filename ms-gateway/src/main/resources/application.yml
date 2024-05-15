@@ -1,0 +1,31 @@
+server:
+  port: 5555
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8888/eureka
+
+spring:
+  application:
+    name: ms-gateway
+  main:
+    web-application-type: reactive
+
+  cloud:
+    gateway:
+      routes:
+        - id: route1
+          predicates:
+            - Path=/sc/clients
+          filters:
+            - RewritePath=/sc/(?<s>.*), /${s}
+          uri: lb://ms-panier
+
+        - id: route2
+          predicates:
+            - Path=/sp/produits
+          filters:
+            - RewritePath=/sp/(?<s>.*), /${s}
+          uri: lb://ms-panier
